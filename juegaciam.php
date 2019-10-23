@@ -1,4 +1,6 @@
 <?php
+	//Cambio realizado en la rama new_master
+
 	//CABECERA DE HTML
 	include('cabecera.php');
 

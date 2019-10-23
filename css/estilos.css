@@ -1,0 +1,63 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/*************************************************************/
+/* Estilos para alumnos */
+@font-face {
+    font-family: myFirstFont;
+    src: url('../fonts/Dosis-Regular.ttf');
+}
+
+body {
+  	font-family: myFirstFont;
+  	font-size: 1.2em;
+  	color: #0066ff;
+  	margin-left:10px;
+}
+
+
+h2 {
+	margin: 10px;
+}
+
+
+h3 {
+	margin: 10px;
+	padding-top: 53px;
+	display: inline-block;
+	font-size: 0.5em;
+	color: #446DE5;
+	font-family: Frutiger;
+	font-weight: bold;
+}
+
+h3#oro {
+	margin-left: 60px;
+}
+
+h3#madera {
+	margin-left: 15px;
+}
+
+h3#comida {
+	margin-left: 15px;
+}
+
+h3#marmol {
+	margin-left: 15px;
+}
+
+section {
+	margin-top: 5px;
+	width: 640px;
+	height: 540px;
+	display: block;
+	background-image: url("../imgs/ikariam.png");
+}
+
+input[type='image'] {
+	width: 70px;
+
+}

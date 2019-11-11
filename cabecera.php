@@ -1,5 +1,6 @@
 <?php
     //ESTO SIEMPRE ES LO PRIMERO
+    //session_destroy();
 	session_start();
 
 

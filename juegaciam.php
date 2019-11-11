@@ -1,12 +1,12 @@
 <?php
-	//Cambio realizado en la rama new_master
-
 	//CABECERA DE HTML
 	include('cabecera.php');
-
-	//Templo = 100 madera, 50 piedra, 50 oro
-	//Almacen = 150 madera, 25 piedra, 100 comida
-	//Cuartel = 75 madera, 25 piedra, 50 comida, 20 oro
+	//session_destroy();
+header("Refresh:5 url=juegaciam.php");
+	//-Templo = 100 madera, 50 piedra, 50 oro
+	//-Aserradero = 200 madera, 50 piedra
+	//-Cantera = 200 piedra, 50 madera
+	//-Cuartel = 75 madera, 25 piedra, 50 comida, 20 oro
 
 	//session_destroy();
 	//Cada minuto: -20 comida, -10 oro --> OPCIONAL PARA EL FINAL
@@ -16,7 +16,13 @@
         // Calcular el tiempo de vida de la sesión (TTL = Time To Live)
         $sessionTTL2 = time() - $_SESSION["intervalo"];
         $num_decremento = $sessionTTL2 / 5;
-        $_SESSION['suministros']['oro']-=round($num_decremento);
+        $num_incremento = $sessionTTL2 / 5;
+        $_SESSION['suministros']['oro']-=round($num_decremento);		
+        $_SESSION['suministros']['comida']-=round($num_incremento)*2;
+	//Este número es 5 segundos; 10=Nº materias primas que proporciona; La sesión guarda la cantidad que tenemos y al multiplicarla
+	//por la cantidad de materias primas que da --> materias ganadas cada 5 segundos;
+       $_SESSION['suministros']['madera']+=round($num_incremento)*10*$_SESSION['edificios']['aserraderos'];
+        $_SESSION['suministros']['marmol']+=round($num_incremento)*10*$_SESSION['edificios']['canteras'];
             
     } 
 
@@ -35,9 +41,10 @@
 		$_SESSION['suministros']['marmol'] = 2000;
 
 		$_SESSION['edificios'] = array();
-		$_SESSION['edificios']['almacenes'] = 0;
 		$_SESSION['edificios']['cuarteles'] = 0;
 		$_SESSION['edificios']['templos'] = 0;
+		$_SESSION['edificios']['aserraderos'] = 0;
+		$_SESSION['edificios']['canteras'] = 0;
 	}
 
 
@@ -45,27 +52,13 @@
 	$madera = $_SESSION['suministros']['madera'];
 	$comida = $_SESSION['suministros']['comida'];
 	$marmol = $_SESSION['suministros']['marmol'];
-	$num_almacenes = $_SESSION['edificios']['almacenes'];
 	$num_cuarteles = $_SESSION['edificios']['cuarteles'];
 	$num_templos = $_SESSION['edificios']['templos'];
+	$num_aserraderos = $_SESSION['edificios']['aserraderos'];
+	$num_canteras = $_SESSION['edificios']['canteras'];
 
 	//Comprobamos que botón de construcción se ha pulsado
-	if (isset($_POST['almacen_x'])) {
-		//Construimos almacén
-		if ( ($madera >= 150) && ($marmol >= 25) && ($comida >= 100) ) {
-			//A construir
-			$_SESSION['edificios']['almacenes']++;
-			$num_almacenes++;
-
-			//Decrementar stock
-			$_SESSION['suministros']['madera']-=150;
-			$_SESSION['suministros']['marmol']-=25;
-			$_SESSION['suministros']['comida']-=100;
-			$madera = $_SESSION['suministros']['madera'];
-			$comida = $_SESSION['suministros']['comida'];
-			$marmol = $_SESSION['suministros']['marmol'];
-		}
-	}
+	
 	//Construimos templo
 	if (isset($_POST['templo_x'])) {
 		//Mirar si hay recursos
@@ -102,6 +95,37 @@
 			$comida = $_SESSION['suministros']['comida'];
 		}
 	}
+	//Construimos aserradero
+	if (isset($_POST['aserradero_x'])) {
+		//Mirar si hay recursos
+		if ( ($madera >= 200) && ($marmol >= 50)) {
+			//A construir
+			$_SESSION['edificios']['aserraderos']++;
+			$num_aserraderos++;
+
+			//Decrementar stock
+			$_SESSION['suministros']['madera']-=200;
+			$_SESSION['suministros']['marmol']-=50;
+			$madera = $_SESSION['suministros']['madera'];
+			$marmol = $_SESSION['suministros']['marmol'];
+		}
+	}
+
+	//Construimos cantera
+	if (isset($_POST['cantera_x'])) {
+		//Mirar si hay recursos
+		if ( ($madera >= 50) && ($marmol >= 200)) {
+			//A construir
+			$_SESSION['edificios']['canteras']++;
+			$num_canteras++;
+
+			//Decrementar stock
+			$_SESSION['suministros']['madera']-=50;
+			$_SESSION['suministros']['marmol']-=200;
+			$madera = $_SESSION['suministros']['madera'];
+			$marmol = $_SESSION['suministros']['marmol'];
+		}
+	}
 
 ?>
 
@@ -110,16 +134,17 @@
 <section>
 
 	<h3 id ="oro"><?php print $oro; ?></h3>
-	<h3 id="madera"><?php print $madera; ?></h3>
-	<h3 id="comida"><?php print $comida; ?></h3>
-	<h3 id="marmol"><?php print $marmol; ?></h3>
+	<h3 id="madera"><?php print "&nbsp;&nbsp;&nbsp;".$madera; ?></h3>
+	<h3 id="comida"><?php print "&nbsp;&nbsp;".$comida; ?></h3>
+	<h3 id="marmol"><?php print "&nbsp;".$marmol; ?></h3>
 
 
 	<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
 
-	    	<input type="image" src="imgs/crear_almacen.gif" name="almacen" value="almacen">
 	    	<input type="image" src="imgs/crear_templo.gif" name="templo" value="templo">
 	    	<input type="image" src="imgs/crear_cuartel.gif" name="cuartel" value="cuartel">	  
+	    	<input type="image" src="imgs/crear_aserradero.gif" name="aserradero" value="aserradero">	  
+	    	<input type="image" src="imgs/crear_cantera.gif" name="cantera" value="cantera">	  
 
 
 	</form>
@@ -129,7 +154,9 @@
 	print "<p>";
 	print "<span>Templos: $num_templos</span>&nbsp;&nbsp;&nbsp;";
 	print "<span>Cuarteles: $num_cuarteles</span>&nbsp;&nbsp;&nbsp;";
-	print "<span>Almacenes: $num_almacenes</span>";
+	print "<span>Aserraderos: $num_aserraderos</span>&nbsp;&nbsp;&nbsp;";
+	print "<span>Canteras: $num_canteras</span>&nbsp;&nbsp;&nbsp;";
+	
 	print "</p>";
 
 ?>
